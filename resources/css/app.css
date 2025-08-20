@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+
+@import 'tw-animate-css';
+
+body {
+    @apply bg-gray-100;
+}
+
+* {
+    text-decoration: none;
+    /* overflow-x: hidden; */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+

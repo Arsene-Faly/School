@@ -1,0 +1,59 @@
+@media (max-width: 390px) {
+    #section {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    #title {
+        font-size: 1.8rem;
+    }
+
+    #desc {
+        font-size: 1.2rem;
+    }
+
+    #btn {
+        padding: 0.8rem;
+    }
+
+    #card {
+        padding: 0;
+    }
+}
+
+@media (max-width: 375px) {
+    #section {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    #title {
+        font-size: 1.7rem;
+    }
+
+    #desc {
+        font-size: 1rem;
+    }
+
+    #btn {
+        padding: 0.6rem;
+    }
+}
+
+@media (max-width: 320px) {
+    #section {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #title {
+        font-size: 1.4rem;
+    }
+
+    #desc {
+        font-size: 0.9rem;
+    }
+
+    #btn {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}
