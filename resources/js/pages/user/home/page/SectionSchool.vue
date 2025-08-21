@@ -27,6 +27,8 @@ function getRating(ecole) {
 function keyFor(ecole, index) {
     return ecole?.id ?? index;
 }
+
+import schoolPhoto from '/public/school.jpg'
 </script>
 
 <template>
@@ -43,7 +45,7 @@ function keyFor(ecole, index) {
                     <div
                         class="flex flex-col h-full max-w-full rounded-3xl border border-gray-200 bg-white shadow-md transition-shadow duration-300 hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
                         <img class="h-72 w-full rounded-t-3xl object-cover"
-                            :src="ecole.info?.cover_photo || '/default-cover.jpg'"
+                            :src="ecole.info?.cover_photo || schoolPhoto"
                             :alt="`Photo de ${ecole.name || 'l\'école'}`" loading="lazy" />
                         <div class="p-8">
                             <div class="mb-6 flex items-center justify-between">
@@ -54,7 +56,7 @@ function keyFor(ecole, index) {
                                 <div class="flex items-center rounded-full bg-gradient-to-r from-indigo-600 to-blue-500 px-4 py-1.5 text-base font-semibold text-white shadow-md"
                                     title="Note">
                                     <StarIcon class="mr-2 h-5 w-5" />
-                                    <span>{{ ecole.average_rating ?? 0 }}/5</span>
+                                    <span>{{ Number(ecole.average_rating).toFixed(1) ?? 0 }}/5</span>
                                 </div>
                             </div>
 

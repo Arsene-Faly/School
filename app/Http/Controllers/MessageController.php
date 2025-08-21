@@ -65,9 +65,14 @@ class MessageController extends Controller
 
     public function store(Request $request)
     {
+        $data = $request->validate([
+            'content' => 'required|string|min:1',
+            'receiver_id' => 'required|exists:users,id',
+        ]);
+
         $message = Message::create([
-            'content' => $request->content,
-            'receiver_id' => $request->receiver_id,
+            'content' => trim($data['content']), // on enlève les espaces inutiles
+            'receiver_id' => $data['receiver_id'],
             'sender_id' => auth()->id(),
         ]);
 
@@ -78,10 +83,16 @@ class MessageController extends Controller
         ]);
     }
 
+
     public function markAsRead(Request $request)
     {
         $receiverId = auth()->id();
-        $senderId = $request->sender_id; // l'utilisateur sélectionné
+        $senderId = $request->input('sender_id');
+
+        // sécurité: vérifier que sender_id est bien fourni
+        if (!$senderId) {
+            return response()->json(['success' => false, 'message' => 'Sender ID manquant']);
+        }
 
         Message::where('receiver_id', $receiverId)
             ->where('sender_id', $senderId)

@@ -23,6 +23,15 @@ return new class extends Migration
             $table->string('cover_photo')->nullable();
             $table->text('description')->nullable();
 
+            // Nouveaux champs
+            $table->date('start_date')->nullable();       // Date de début de l'activité
+            $table->date('end_date')->nullable();         // Date de fin de l'activité
+            $table->string('location')->nullable();       // Lieu de l'activité
+            $table->string('organizer')->nullable();      // Organisateur / responsable
+            $table->string('type')->nullable();           // Type : conférence, workshop, sortie...
+            $table->string('audience')->nullable();       // Public cible : étudiants, professeurs...
+            $table->string('language')->default('fr');    // Langue utilisée
+
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
 
             $table->timestamps();

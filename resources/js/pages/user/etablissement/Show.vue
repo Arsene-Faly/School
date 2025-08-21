@@ -3,6 +3,7 @@ import Section from '@/components/app/user/section/Section.vue';
 import SectionDefault from '@/components/app/user/section/SectionDefault.vue';
 import UserLayout from '@/layouts/User/UserLayout.vue';
 import About from '@/pages/owner/owner/school/page/About.vue';
+import Activity from '@/pages/owner/owner/school/page/Activity.vue';
 import Formation from '@/pages/owner/owner/school/page/Formation.vue';
 import Gallery from '@/pages/owner/owner/school/page/Gallery.vue';
 import SchoolHeader from '@/pages/owner/owner/school/page/SchoolHeader.vue';
@@ -55,6 +56,7 @@ onMounted(() => {
             <SchoolMaps :school="props.schools" />
             <Gallery :gallery="props.gallery"/>
             <Formation :school="props.schools" />
+            <Activity :school="props.school" />
             <SchoolTestimonials :school="props.schools"/>
         </Section>
 

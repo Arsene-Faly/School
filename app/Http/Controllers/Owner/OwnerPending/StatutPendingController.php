@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Owner\OwnerPending;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Owner\OwnerPendingvalidationRequest;
+use App\Models\Category;
 use App\Models\School;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -14,9 +14,11 @@ class StatutPendingController extends Controller
 {
     public function index()
     {
+        $category = Category::all();
         $school = Auth::user()->school;
         return Inertia('owner/ownerPending/Index', [
             'ecole' => $school,
+            'categories' => $category
         ]);
     }
 
@@ -29,7 +31,6 @@ class StatutPendingController extends Controller
             $documentPath = $request->file('document')->store('documents', 'public');
         }
 
-        $user = Auth::user();
         $slug = Str::slug($validated['name']) . '-' . rand(10000, 99999);
 
         School::updateOrCreate(
@@ -42,7 +43,9 @@ class StatutPendingController extends Controller
                 'adresse' => $validated['adresse'],
                 'contact' => $validated['contact'],
                 'document' => $documentPath ? 'storage/' . $documentPath : null,
-                'status' => 'pending'
+                'category_id' => $validated['category_id'], // ajouté
+                'type' => $validated['type'], // ajouté
+                'status' => 'pending',
             ]
         );
 

@@ -41,13 +41,13 @@ const props = defineProps({
 
             <Section name="Activité et Programme"
                 description="Découvrez les établissements les plus plébiscités par notre communauté d'étudiants">
-                <SectionProgram :data="props.data"/>
-            </Section>
-
-            <Section name="Avis des étudiants" description="Découvrez les avis des étudiants">
-                <SectionTestimonials :data="props.data" />
+                <SectionProgram :data="props.data" />
             </Section>
         </div>
+
+        <Section name="Avis des étudiants" description="Découvrez les avis des étudiants">
+            <SectionTestimonials :data="props.data" />
+        </Section>
 
         <Section name="A propos de nous"
             description="Votre avenir commence ici, avec une équipe qui croit en votre potentiel">

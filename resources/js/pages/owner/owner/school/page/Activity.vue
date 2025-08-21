@@ -38,7 +38,22 @@ function goToPage(page) {
             </h2>
         </div>
 
-        <div class="max-w-6xl mx-auto space-y-24">
+        <div v-if="!props.school?.activity || props.school.activity.length === 0"
+            class="flex flex-col items-center justify-center py-16 px-6 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-400 mb-4" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 8h10M7 16h4m-2 4h.01M12 20h9M3 4h18M4 8h16M4 16h8" />
+            </svg>
+
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Aucun activity trouvé</h1>
+
+            <p class="text-gray-600 text-center max-w-sm">
+                Soyez le premier à partager votre expérience et à inspirer d’autres personnes.
+            </p>
+        </div>
+
+        <div v-else class="max-w-6xl mx-auto space-y-24">
             <div v-for="(program, index) in paginatedPrograms" :key="program.id || index"
                 class="grid md:grid-cols-2 gap-12 items-center group">
                 <!-- Image -->

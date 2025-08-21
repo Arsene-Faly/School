@@ -115,35 +115,46 @@ interface CustomPageProps {
     auth: {
         user?: User;
         unreadCount?: number;
+        unreadByUser?: Record<number, number>; // clé = sender_id
     };
-    [key: string]: any; // pour accepter d'autres props dynamiques
+    [key: string]: any;
 }
 
-const pages = usePage<CustomPageProps>()
+const pages = usePage<CustomPageProps>();
 
-// compteur réactif
-const unreadCount = ref(pages.props.auth?.unreadCount ?? 0)
+// compteur global
+const unreadCount = ref(pages.props.auth.unreadCount ?? 0);
 
-// WebSocket pour messages temps réel
-let ws: WebSocket | null = null
+// compteur par utilisateur
+const unreadByUser = ref<Record<number, number>>(pages.props.auth.unreadByUser ?? {});
+
+// WebSocket
+let ws: WebSocket | null = null;
+
 function connectWS() {
-    if (ws) ws.close()
-    ws = new WebSocket('ws://localhost:6001') // ton serveur WS local
+    if (ws) ws.close();
+    ws = new WebSocket('ws://localhost:6001');
 
-    ws.onopen = () => console.log('WS connecté pour notifications')
+    ws.onopen = () => console.log('WS connecté pour notifications');
     ws.onmessage = (event) => {
-        const msg = JSON.parse(event.data)
-        // si le message est destiné à l'utilisateur courant, incrémenter
-        if (msg.receiver_id === pages.props.auth?.user?.id) {
-            unreadCount.value++
+        const msg = JSON.parse(event.data);
+
+        if (msg.receiver_id === pages.props.auth.user?.id) {
+            // incrémente compteur global
+            unreadCount.value++;
+
+            // incrémente compteur par expéditeur
+            if (unreadByUser.value[msg.sender_id])
+                unreadByUser.value[msg.sender_id]++;
+            else
+                unreadByUser.value[msg.sender_id] = 1;
         }
-    }
+    };
 
-    ws.onclose = () => setTimeout(connectWS, 1000) // reconnexion auto
+    ws.onclose = () => setTimeout(connectWS, 1000);
 }
-onMounted(() => connectWS())
 
-
+onMounted(() => connectWS());
 </script>
 
 <template>
@@ -252,7 +263,7 @@ onMounted(() => connectWS())
                 <li v-if="user?.role == 'owner'">
                     <TextLink :href="route('owner.home')" :class="[
                         'flex items-center space-x-4',
-                        current === 'owner.home' || current === 'owner.edit.school' || current === 'owner.editInfo.school' || current === 'owner.show.school' || current === 'owner.gallery.school' || current === 'owner.testimonials.school' || (current === 'owner.formation.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.formation.add' || current === 'owner.formation.show' || current === 'owner.formation.edit' || (current === 'owner.activity.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.activity.add' || current === 'owner.activity.show' || current === 'owner.activity.edit' ? 'font-bold text-yellow-400' : 'text-white hover:text-yellow-400',
+                        current === 'owner.home' || current === 'owner.about.school' || current === 'owner.edit.school' || current === 'owner.editInfo.school' || current === 'owner.show.school' || current === 'owner.gallery.school' || current === 'owner.testimonials.school' || (current === 'owner.formation.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.formation.add' || current === 'owner.formation.show' || current === 'owner.formation.edit' || (current === 'owner.activity.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.activity.add' || current === 'owner.activity.show' || current === 'owner.activity.edit' ? 'font-bold text-yellow-400' : 'text-white hover:text-yellow-400',
                     ]">Mon école</TextLink>
                 </li>
 
@@ -429,7 +440,7 @@ onMounted(() => connectWS())
                     <li v-if="user?.role == 'owner'">
                         <TextLink :href="route('owner.home')" :class="[
                             'relative flex items-center gap-3 rounded-xl px-4 py-3 transition-colors duration-300',
-                            current === 'owner.home' || current === 'owner.edit.school' || current === 'owner.editInfo.school' || current === 'owner.show.school' || current === 'owner.gallery.school' || current === 'owner.testimonials.school' || (current === 'owner.formation.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.formation.add' || current === 'owner.formation.show' || current === 'owner.formation.edit' || (current === 'owner.activity.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.activity.add' || current === 'owner.activity.show' || current === 'owner.activity.edit'
+                            current === 'owner.home' || current === 'owner.about.school' || current === 'owner.edit.school' || current === 'owner.editInfo.school' || current === 'owner.show.school' || current === 'owner.gallery.school' || current === 'owner.testimonials.school' || (current === 'owner.formation.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.formation.add' || current === 'owner.formation.show' || current === 'owner.formation.edit' || (current === 'owner.activity.status' && ['published', 'draft', 'archived'].includes(params.status)) || current === 'owner.activity.add' || current === 'owner.activity.show' || current === 'owner.activity.edit'
                                 ? 'text-yellow-400'
                                 : 'text-white hover:bg-yellow-400 hover:text-indigo-900',
                         ]">
@@ -524,7 +535,7 @@ onMounted(() => connectWS())
             <img :src="chats" alt="Chat" class="w-8 h-8" />
             <span v-if="unreadCount > 0"
                 class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
-                <p>voir</p>
+                <p>new</p>
             </span>
         </TextLink>
     </div>

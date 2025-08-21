@@ -28,7 +28,9 @@ class OwnerPendingvalidationRequest extends FormRequest
             'stat' => 'required|string|max:20',
             'adresse' => 'required|string|max:100',
             'contact' => 'required|string|max:20',
-            'document' => 'nullable|file|mimes:pdf,jpg,png|max:2048', // 2048 KB = 2 MB
+            'document' => 'nullable|file|mimes:pdf,jpg,png|max:2048', // 2 Mo
+            'category_id' => 'required|exists:categories,id',
+            'type' => 'required|in:public,prive',
         ];
     }
 
@@ -36,10 +38,17 @@ class OwnerPendingvalidationRequest extends FormRequest
     {
         return [
             'name.required' => 'Le nom est requis.',
-            'name.max' => 'Le nom ne doit pas dépasser 30 caractères.',
+            'name.max' => 'Le nom ne doit pas dépasser 100 caractères.',
             'nif.required' => 'Le NIF est requis.',
+            'stat.required' => 'Le Stat est requis.',
+            'adresse.required' => 'L’adresse est requise.',
+            'contact.required' => 'Le contact est requis.',
             'document.mimes' => 'Le document doit être un fichier PDF, JPG ou PNG.',
             'document.max' => 'Le document ne doit pas dépasser 2 Mo.',
+            'category_id.required' => 'La catégorie est requise.',
+            'category_id.exists' => 'La catégorie sélectionnée est invalide.',
+            'type.required' => 'Le type d’établissement est requis.',
+            'type.in' => 'Le type doit être "public" ou "prive".',
         ];
     }
 
@@ -51,6 +60,7 @@ class OwnerPendingvalidationRequest extends FormRequest
             'stat' => $this->stat ? trim($this->stat) : null,
             'adresse' => $this->adresse ? trim($this->adresse) : null,
             'contact' => $this->contact ? trim($this->contact) : null,
+            'type' => $this->type ? trim($this->type) : 'public',
         ]);
     }
 }

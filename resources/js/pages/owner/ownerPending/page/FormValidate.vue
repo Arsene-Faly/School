@@ -14,6 +14,10 @@ const props = defineProps({
         type: Object,
         default: null,
     },
+    categories: {
+        type: Array,
+        default: () => [],
+    }
 })
 
 const form = useForm({
@@ -23,6 +27,8 @@ const form = useForm({
     adresse: '',
     contact: '',
     document: null,
+    category_id: '',
+    type: 'public',
 })
 
 watch(() => props.ecole, (newEcole) => {
@@ -32,16 +38,14 @@ watch(() => props.ecole, (newEcole) => {
         form.stat = newEcole.stat || ''
         form.adresse = newEcole.adresse || ''
         form.contact = newEcole.contact || ''
+        form.category_id = newEcole.category_id || ''
+        form.type = newEcole.type || 'public'
     }
 }, { immediate: true })
 
 function onFileChange(event) {
     const files = event.target.files
-    if (files.length > 0) {
-        form.document = files[0]
-    } else {
-        form.document = null
-    }
+    form.document = files.length > 0 ? files[0] : null
 }
 
 const submit = () => {
@@ -60,70 +64,71 @@ const submit = () => {
 }
 
 const hasEcoleData = computed(() => !!props.ecole)
-
 </script>
 
 <template>
-    <div class="w-full mt-10 px-4 sm:px-6 lg:px-8 py-5 bg-gray-50 rounded-xl" ref="formRef">
+    <div class="w-full mt-10 px-4 sm:px-6 lg:px-8 py-5 bg-gray-50 rounded-xl">
         <TitleLayout title="Entrer votre Information" />
 
         <div v-if="hasEcoleData" class="mb-4 p-4 rounded-xl bg-green-50 text-green-700 border border-green-200">
             Vos informations ont déjà été enregistrées. Vous pouvez les modifier si nécessaire.
         </div>
 
-        <form @submit.prevent="submit">
-            <div class="space-y-4">
-                <div class="space-y-2">
-                    <Label for="name" class="text-md sm:text-lg label">Nom complet de l'école <span
-                            class="text-red-500">*</span></Label>
-                    <Input id="name" type="text" required autofocus :tabindex="1" autocomplete="name"
-                        v-model="form.name" placeholder="ex: ESMIA"
-                        class="text-md sm:text-lg input" />
-                    <InputError :message="form.errors.name" />
+        <form @submit.prevent="submit" class="space-y-4">
+            <div class="space-y-2">
+                <Label for="name" class="text-sm sm:text-base label">Nom complet de l'école <span class="text-red-500">*</span></Label>
+                <Input id="name" class="input mt-2 text-sm sm:text-base" type="text" v-model="form.name" required placeholder="ex: ESMIA" />
+                <InputError :message="form.errors.name" />
 
-                    <Label for="nif" class="text-md sm:text-lg label">Nif<span
-                            class="text-red-500">*</span></Label>
-                    <Input id="nif" type="text" required autofocus :tabindex="1" autocomplete="nif" v-model="form.nif"
-                        placeholder="ex: 123456789"
-                        class="text-md sm:text-lg input" />
-                    <InputError :message="form.errors.nif" />
+                <!-- Type -->
+                <Label for="type" class="text-sm sm:text-base label">Type d'établissement <span class="text-red-500">*</span></Label>
+                <select id="type"  v-model="form.type" required
+                    class="block w-full border cursor-pointer border-gray-300 rounded-2xl py-3 px-4 text-base text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                    <option value="public">Public</option>
+                    <option value="prive">Privé</option>
+                </select>
+                <InputError :message="form.errors.type" />
 
-                    <Label for="stat" class="text-md sm:text-lg label">Stat <span
-                            class="text-red-500">*</span></Label>
-                    <Input id="stat" type="text" required autofocus :tabindex="1" autocomplete="stat"
-                        v-model="form.stat" placeholder="ex: 987654321"
-                        class="text-md sm:text-lg input" />
-                    <InputError :message="form.errors.stat" />
+                <!-- Category -->
+                <Label for="category" class="text-sm sm:text-base label">Catégorie de l'école <span class="text-red-500">*</span></Label>
+                <select id="category" v-model="form.category_id" required
+                    class="block w-full border cursor-pointer border-gray-300 rounded-2xl py-3 px-4 text-base text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                    <option value="">-- Sélectionnez une catégorie --</option>
+                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                </select>
+                <InputError :message="form.errors.category_id" />
 
-                    <Label for="adresse" class="text-md sm:text-lg label">Adresse exacte <span
-                            class="text-red-500">*</span></Label>
-                    <Input id="adresse" type="text" required autofocus :tabindex="1" autocomplete="adresse"
-                        v-model="form.adresse" placeholder="ex: Mahamasina"
-                        class="text-md sm:text-lg input" />
-                    <InputError :message="form.errors.adresse" />
+                <!-- NIF -->
+                <Label for="nif" class="text-sm sm:text-base label">NIF <span class="text-red-500">*</span></Label>
+                <Input id="nif" class="input mt-2 text-sm sm:text-base" type="text" v-model="form.nif" required placeholder="ex: 123456789" />
+                <InputError :message="form.errors.nif" />
 
-                    <Label for="contact" class="text-md sm:text-lg label">Contact ou Email<span
-                            class="text-red-500">*</span></Label>
-                    <Input id="contact" type="text" required autofocus :tabindex="1" autocomplete="contact"
-                        v-model="form.contact" placeholder="ex: 032 12 345 67 ou ex : exemple@gmail.com"
-                        class="text-md sm:text-lg input" />
-                    <InputError :message="form.errors.contact" />
+                <!-- Stat -->
+                <Label for="stat" class="text-sm sm:text-base label">Stat <span class="text-red-500">*</span></Label>
+                <Input id="stat" class="input mt-2 text-sm sm:text-base" type="text" v-model="form.stat" required placeholder="ex: 987654321" />
+                <InputError :message="form.errors.stat" />
 
-                    <Label for="document" class="text-md sm:text-lg label">Document <span
-                            class="text-red-500">*</span></Label>
-                    <input id="document" type="file" @change="onFileChange"
-                        class="block w-full border cursor-pointer border-gray-300 rounded-2xl py-3 px-4 text-base text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white" />
-                    <InputError :message="form.errors.document" />
-                </div>
+                <!-- Adresse -->
+                <Label for="adresse" class="text-sm sm:text-base label">Adresse exacte <span class="text-red-500">*</span></Label>
+                <Input id="adresse" class="input mt-2 text-sm sm:text-base" type="text" v-model="form.adresse" required placeholder="ex: Mahamasina" />
+                <InputError :message="form.errors.adresse" />
 
-                <Button type="submit" :tabindex="4" :disabled="form.processing"
-                    class="cursor-pointer mt-6 w-[30%] flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3 text-lg font-semibold text-white transition-all duration-200 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50">
-                    <LoaderCircle v-if="form.processing" class="h-5 w-5 animate-spin" />
-                    <span>{{ form.processing ? 'Veuillez patienter...' : 'Envoyer' }}</span>
-                </Button>
+                <!-- Contact -->
+                <Label for="contact" class="text-sm sm:text-base label">Contact ou Email <span class="text-red-500">*</span></Label>
+                <Input id="contact" class="input mt-2 text-sm sm:text-base" type="text" v-model="form.contact" required placeholder="ex: 032 12 345 67 ou exemple@gmail.com" />
+                <InputError :message="form.errors.contact" />
+
+                <!-- Document -->
+                <Label for="document" class="text-sm sm:text-base label">Document <span class="text-red-500">*</span></Label>
+                <input id="document" type="file" @change="onFileChange"
+                    class="block w-full border cursor-pointer border-gray-300 rounded-2xl py-3 px-4 text-base text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white" />
+                <InputError :message="form.errors.document" />
             </div>
+
+            <Button type="submit" :disabled="form.processing" class="mt-6 w-[30%] flex items-center justify-center gap-2 bg-indigo-600 text-white rounded-2xl px-6 py-3 hover:bg-indigo-700 disabled:opacity-50">
+                <LoaderCircle v-if="form.processing" class="h-5 w-5 animate-spin" />
+                <span>{{ form.processing ? 'Veuillez patienter...' : 'Envoyer' }}</span>
+            </Button>
         </form>
     </div>
-
-
 </template>

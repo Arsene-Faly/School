@@ -45,8 +45,8 @@ class DatabaseSeeder extends Seeder
         //     ]);
         // });
 
-        Testimonial::factory()->count(10)->create();
-        Contact::factory()->count(10)->create();
+        // Testimonial::factory()->count(10)->create();
+        // Contact::factory()->count(10)->create();
 
         // Formation::factory()->count(20)->create();
         // SchoolTestimonial::factory()->count(10)->create();

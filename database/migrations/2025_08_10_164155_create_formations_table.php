@@ -23,6 +23,14 @@ return new class extends Migration
             $table->string('cover_photo')->nullable();
             $table->text('description')->nullable();
 
+            // Nouveaux champs
+            $table->string('level')->nullable(); // Niveau : L1, L2, L3, Master...
+            $table->integer('duration')->nullable(); // Durée en mois ou années
+            $table->string('mode')->nullable(); // Mode : présentiel, en ligne, hybride
+            $table->string('language')->default('fr'); // Langue d’enseignement
+            $table->decimal('price', 10, 2)->nullable(); // Prix de la formation
+            $table->string('category')->nullable(); // Catégorie : informatique, marketing...
+
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
 
             $table->timestamps();

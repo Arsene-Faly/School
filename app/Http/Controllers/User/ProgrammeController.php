@@ -68,12 +68,12 @@ class ProgrammeController extends Controller
 
         $model = $categories[$categorie];
 
-        $item = $model::where('slug', $slug)
-            ->with('school')
-
+        $formation = $model::with('school')
+            ->withCount('views')
+            ->where('slug', $slug)
             ->first();
 
-        if (!$item) {
+        if (!$formation) {
             return redirect()
                 ->route('programme.categorie', ['categorie' => $categorie])
                 ->with('error', ucfirst($categorie) . ' non trouvée.');
@@ -84,25 +84,26 @@ class ProgrammeController extends Controller
 
         if ($categorie === 'formation') {
             FormationView::firstOrCreate([
-                'formation_id' => $item->id,
+                'formation_id' => $formation->id,
                 'user_id'      => $userId,
                 'ip_address'   => $userId ? null : $ip,
             ]);
+
+            // Conversion JSON -> tableau pour Vue
+            $formation->level = $formation->level ? json_decode($formation->level, true) : [];
+            $formation->category = $formation->category ? json_decode($formation->category, true) : [];
         } else {
             ActivityView::firstOrCreate([
-                'activity_id' => $item->id,
+                'activity_id' => $formation->id,
                 'user_id'     => $userId,
                 'ip_address'  => $userId ? null : $ip,
             ]);
         }
 
-        $item->views_count = $item->views()->count();
-
         return Inertia::render('user/programme/Show', [
-            'data' => [
-                'categorie' => $categorie,
-                'item'      => $item,
-            ]
+            'formation' => $formation,
+            'categorie' => $categorie,
+            'views_count' => $formation->views_count,
         ]);
     }
 }

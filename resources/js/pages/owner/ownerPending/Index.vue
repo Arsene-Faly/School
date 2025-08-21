@@ -9,6 +9,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  categories: {
+        type: Array,
+        default: () => [],
+    }
 })
 
 </script>
@@ -20,7 +24,7 @@ const props = defineProps({
 
         <Section name="Attente validation de propriétaire"
             description="Votre demande pour devenir propriétaire est en attente de validation par un administrateur. Vous recevrez une notification une fois la validation effectuée ou refusé.">
-            <Message :ecole="props.ecole"/>
+            <Message :ecole="props.ecole" :categories="props.categories"/>
         </Section>
 
 

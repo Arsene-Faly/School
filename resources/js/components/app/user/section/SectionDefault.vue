@@ -5,6 +5,8 @@ defineProps({
   title: String,
   description: String
 });
+
+import schoolPhoto from '/public/school.jpg'
 </script>
 
 <template>

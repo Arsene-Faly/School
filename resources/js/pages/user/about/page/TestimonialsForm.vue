@@ -12,7 +12,14 @@ const form = useForm({
     description: '',
 });
 
+
+const submitting = ref(false);
+
 const submit = () => {
+    if (submitting.value) return; // bloque si déjà en cours
+
+    submitting.value = true;
+
     form.post(route('testimonial.add'), {
         onSuccess: () => {
             Swal.fire({
@@ -22,15 +29,19 @@ const submit = () => {
                 confirmButtonColor: '#6366F1', // indigo
             });
 
-            form.description = '';
+            form.reset('description');
 
             const el = document.getElementById('testimonials');
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth' });
             }
-        }
+        },
+        onFinish: () => {
+            submitting.value = false; // réactive le bouton
+        },
     });
 };
+
 </script>
 
 
@@ -65,6 +76,7 @@ const submit = () => {
             <!-- Bouton -->
             <div class="text-center">
                 <button type="submit"
+                    :disabled="submitting"
                     class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl shadow-sm transition duration-300">
                     Envoyer le témoignage
                 </button>

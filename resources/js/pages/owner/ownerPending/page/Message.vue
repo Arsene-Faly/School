@@ -8,6 +8,10 @@ const props = defineProps({
         type: Object,
         default: null,
     },
+    categories: {
+        type: Array,
+        default: () => [],
+    }
 })
 
 const formRef = ref(null)
@@ -75,7 +79,7 @@ function scrollToForm() {
     </div>
 
     <div class="w-full mt-10 px-0 sm:px-6 lg:px-8 py-5">
-        <FormValidate ref="formRef" :ecole="props.ecole" />
+        <FormValidate ref="formRef" :ecole="props.ecole" :categories="props.categories" />
     </div>
 </template>
 

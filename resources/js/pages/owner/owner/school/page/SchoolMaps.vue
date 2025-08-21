@@ -92,12 +92,9 @@ onBeforeUnmount(() => {
                 Maps
             </h2>
 
-            <div v-if="props.school?.info && props.school.info.latitude && props.school.info.longitude"
-                 ref="mapRef"
-                 id="map"
-                 class="w-full h-96 rounded-lg shadow-md"
-                 role="region"
-                 aria-label="Carte de localisation de l'école">
+            <div v-if="props.school?.info && props.school.info.latitude && props.school.info.longitude" ref="mapRef"
+                id="map" class="w-full h-96 rounded-lg shadow-md" role="region"
+                aria-label="Carte de localisation de l'école">
             </div>
 
             <div v-else class="p-6 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 text-center">

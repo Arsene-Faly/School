@@ -181,27 +181,22 @@ class OwnerHomeController extends Controller
             ->with([
                 'info',
                 'galeryImages',
-                'Schooltestimonials' => function ($query) {
-                    $query->where('status', true);
-                },
+                'Schooltestimonials' => fn($query) => $query->where('status', true),
                 'Schooltestimonials.user',
-                'formations' => function ($query) {
-                    $query->where('status', 'published');
-                },
+                'formations' => fn($query) => $query->where('status', 'published'),
                 'about',
-                'activity' => function ($query) {
-                    $query->where('status', 'published');
-                },
+                'activity' => fn($query) => $query->where('status', 'published'),
             ])
-            ->first();
+            ->firstOrFail();
 
+        // Moyenne de toutes les notes
         $averageRating = $school->ratings()->avg('etoile') ?? 0;
 
+        // Note de l'utilisateur connecté
         $userRating = auth()->check()
             ? $school->ratings()->where('user_id', auth()->id())->value('etoile')
             : null;
 
-        // dd($school);
         return Inertia("owner/owner/school/Show", [
             'school' => $school,
             'average_rating' => round($averageRating, 1),
@@ -209,6 +204,7 @@ class OwnerHomeController extends Controller
             'gallery' => $school->galeryImages ?? [],
         ]);
     }
+
 
     public function Gallery()
     {

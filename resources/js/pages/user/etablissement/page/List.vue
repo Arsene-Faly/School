@@ -4,6 +4,7 @@ import { MapPinIcon, EyeIcon } from "@heroicons/vue/24/solid";
 import { StarIcon } from "lucide-vue-next";
 import TextLink from "@/components/TextLink.vue";
 import { router } from "@inertiajs/vue3";
+import schoolPhoto from '/public/school.jpg'
 
 // Props
 const props = defineProps({
@@ -99,7 +100,7 @@ onBeforeUnmount(() => clearTimeout(searchTimeout));
             <div class="flex flex-col md:flex-row">
                 <!-- Image -->
                 <div class="w-full h-64 md:w-64 md:h-auto flex-shrink-0">
-                    <img :src="school.info?.cover_photo || '/default-cover.jpg'" :alt="school.name || 'Image école'"
+                    <img :src="school.info?.cover_photo || schoolPhoto" :alt="school.name || 'Image école'"
                         class="object-cover w-full h-full rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none" />
                 </div>
 
